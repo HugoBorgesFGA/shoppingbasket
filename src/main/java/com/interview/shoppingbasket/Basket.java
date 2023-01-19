@@ -1,7 +1,6 @@
 package com.interview.shoppingbasket;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Basket {
     private List<BasketItem> items = new ArrayList<>();
