@@ -20,25 +20,27 @@ public class Basket {
     }
 
     public void consolidateItems() {
-        final Map<String, List<BasketItem>> basketItemsPerCode = items.stream()
-            .collect(Collectors.groupingBy(BasketItem::getProductCode));
+        final Map<String, BasketItem> basketItemPerCode = new HashMap<>();
 
-        this.items = basketItemsPerCode.values().stream()
-            .map(siblingItems -> siblingItems.stream()
-                .reduce((basketItem, basketItem2) -> {
-                    final BasketItem result = new BasketItem();
+        for(BasketItem item: items) {
+            final String productCode = item.getProductCode();
 
-                    // The following could be extracted to an auxiliary clone method in BasketItem
-                    // keeping it here to strictly follow the problem requirements
-                    result.setProductCode(basketItem2.getProductCode());
-                    result.setProductName(basketItem2.getProductName());
-                    result.setProductRetailPrice(basketItem2.getProductRetailPrice());
-                    result.setQuantity(basketItem.getQuantity() + basketItem2.getQuantity());
+            if (basketItemPerCode.containsKey(productCode)) {
+                final BasketItem basketItem = basketItemPerCode.get(productCode);
+                final int previousQuantity = basketItem.getQuantity();
+                basketItem.setQuantity(previousQuantity + item.getQuantity());
 
-                    return result;
-                }))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toList());
+                continue;
+            }
+
+            final BasketItem basketItem = new BasketItem();
+            basketItem.setProductCode(productCode);
+            basketItem.setProductName(item.getProductName());
+            basketItem.setQuantity(item.getQuantity());
+
+            basketItemPerCode.put(productCode, basketItem);
+        }
+
+        this.items = new ArrayList<>(basketItemPerCode.values());
     }
 }
