@@ -10,7 +10,15 @@ public class TwoForOnePromotion extends Promotion {
     }
 
     @Override
-    protected double computePromotionPrice(BasketItem basketItem) {
-        return 0;
+    public double computeDiscount(BasketItem basketItem) {
+        final int quantity = basketItem.getQuantity();
+        final int freeItems = quantity / 2;
+
+        return freeItems * basketItem.getProductRetailPrice();
+    }
+
+    @Override
+    public String getDescription() {
+        return "Pay 1 Get 2 " + getProductCode();
     }
 }

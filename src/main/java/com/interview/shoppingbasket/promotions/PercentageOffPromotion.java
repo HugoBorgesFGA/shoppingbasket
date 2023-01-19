@@ -12,7 +12,13 @@ public class PercentageOffPromotion extends Promotion {
     }
 
     @Override
-    protected double computePromotionPrice(BasketItem basketItem) {
-        return 0;
+    public double computeDiscount(BasketItem basketItem) {
+        final double totalPrice = basketItem.getQuantity() * basketItem.getProductRetailPrice();
+        return (percentageOff/100.0) * totalPrice;
+    }
+
+    @Override
+    public String getDescription() {
+        return String.format("%.2f percent off in %s", percentageOff, getProductCode());
     }
 }
